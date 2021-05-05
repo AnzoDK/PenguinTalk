@@ -18,24 +18,7 @@
 //#define _WINSOCKAPI_
 #include <windows.h>
 #include <winsock.h>
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <AF_Irda.h>
-//#include <in6addr.h>
-//#include <mstcpip.h>
-//#include <MSWSock.h>
-//#include <mswsockdef.h>
-//#include <nsemail.h>
-//#include <NspAPI.h>
-//#include <socketapi.h>
-//#include <SpOrder.h>
-//#include <transportsettingcommon.h>
-//#include <WS2atm.h>
-//#include <WS2spi.h>
-//#include <WS2tcpip.h>
-//#include <wsipv6ok.h>
-//#include <WSNwLink.h>
-//#include <wsrm.h>
+
 
 
 #define bzero(b,len) (memset((b), '\0', (len)), (void) 0)  
