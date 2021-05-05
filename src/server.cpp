@@ -1,6 +1,8 @@
 #include "../include/PenguinTalkServer.h"
 #include <iostream>
 
+
+
 Server::Server()
 {
     m_host = DEFAULT_HOST;
@@ -8,6 +10,11 @@ Server::Server()
 }
 int Server::Init()
 {
+#ifdef _WIN32
+    WORD wV = MAKEWORD(2, 2);
+    WSADATA wsaData;
+    WSAStartup(wV, &wsaData);
+#endif
     m_fd = socket(AF_INET,SOCK_STREAM,0);
     if(m_fd < 0)
     {
@@ -23,6 +30,9 @@ int Server::Init()
     }
     return CONN_SUCCESS;
 }
+
+
+#ifdef __linux__
 int Server::Start()
 {
     listen(m_fd,5);
@@ -45,8 +55,32 @@ int Server::Start()
     std::cout << std::string(m_msgBuffer) << std::endl;
     return NONE;
 }
+#endif
 
-
+#ifdef _WIN32
+int Server::Start()
+{
+    listen(m_fd, 5);
+    sockaddr_in client_addr = sockaddr_in();
+    int client_addr_len = sizeof(client_addr);
+    int acc_socket = accept(m_fd, (sockaddr*)&client_addr, &client_addr_len);
+    if (acc_socket < 0)
+    {
+        return ACCEPT_ERROR;
+    }
+    bzero(m_msgBuffer, 256);
+    int n = recv(acc_socket, m_msgBuffer, 255, 0);
+    if (n < 0)
+    {
+        return SOCKET_READ_ERROR;
+    }
+    n = send(acc_socket, "Data Recieved", 13, 0);
+    closesocket(acc_socket);
+    closesocket(m_fd);
+    std::cout << std::string(m_msgBuffer) << std::endl;
+    return NONE;
+}
+#endif
 
 int main()
 {
