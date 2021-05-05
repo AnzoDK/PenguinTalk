@@ -1,8 +1,6 @@
 #pragma once
 #include <iostream>
-
-// Inclutions for Linux libraries
-#ifdef __linux__
+#ifndef _WIN32_
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,16 +11,9 @@
 #include <netdb.h>
 #endif
 
-// Inclustions for Windows libraries
-#ifdef _WIN32
-//#define _WINSOCKAPI_
+#ifdef _WIN32_
 #include <windows.h>
-#include <winsock.h>
 
-
-
-#define bzero(b,len) (memset((b), '\0', (len)), (void) 0)  
-#define bcopy(b1,b2,len) (memmove((b2), (b1), (len)), (void) 0)
 #endif
 
 #define DEFAULT_PORT 44344
