@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#ifndef _WIN32_
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,6 +9,12 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#endif
+
+#ifdef _WIN32_
+#include <windows.h>
+#endif
+
 #define DEFAULT_PORT 44344
 #define DEFAULT_HOST "localhost"
 /*ENUMS*/
