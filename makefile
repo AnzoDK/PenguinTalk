@@ -1,0 +1,20 @@
+CXX:=g++
+SERVER_FLAGS:= -std=c++17
+CLIENT_FLAGS:= -std=c++17
+SERVER_LINK:= 
+CLIENT_LINK:=
+SERVER_OUT:=server.out
+CLIENT_OUT:=client.out
+
+release:
+	make client CLIENT_FLAGS+=-O2
+	make server SERVER_FLAGS+=-O2
+debug:
+	make client CLIENT_FLAGS+=-g3
+	make server SERVER_FLAGS+=-g3
+client:
+	$(CXX) $(CLIENT_FLAGS) ./src/client.cpp -o $(CLIENT_OUT) $(CLIENT_LINK)
+server:
+	$(CXX) $(SERVER_FLAGS) ./src/server.cpp -o $(SERVER_OUT) $(SERVER_LINK)
+clean:
+	-rm *.out

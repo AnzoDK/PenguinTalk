@@ -55,7 +55,7 @@ int Client::GetInput()
         return SOCKET_READ_ERROR;
     }
     printf("%s\n",m_msgBuffer);
-    closesocket(m_fd);
+    close(m_fd);
     return 0;
 }
 #endif
