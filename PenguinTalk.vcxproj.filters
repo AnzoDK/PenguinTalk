@@ -25,14 +25,6 @@
     <None Include=".kdev4\PenguinTalk.kdev4" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\client.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\server.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="include\PenguinTalkServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
