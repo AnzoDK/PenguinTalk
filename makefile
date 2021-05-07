@@ -8,11 +8,11 @@ CLIENT_OUT:=client.out
 
 release:
 	make clean
-	make client CLIENT_FLAGS+=-O2
+	#make client CLIENT_FLAGS+=-O2
 	make server SERVER_FLAGS+=-O2
 debug:
 	make clean
-	make client CLIENT_FLAGS+=-g3
+	#make client CLIENT_FLAGS+=-g3
 	make server SERVER_FLAGS+=-g3
 client:
 	$(CXX) $(CLIENT_FLAGS) ./src/client.cpp -o $(CLIENT_OUT) $(CLIENT_LINK)
