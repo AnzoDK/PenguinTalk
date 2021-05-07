@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
-
+#include <algorithm>
+#include <vector>
 // Inclutions for Linux libraries
 #ifdef __linux__
 #include <pthread.h>
@@ -116,4 +117,164 @@ char* g_CopyBuffer(char* buffer, int start, int end)
     }
     return newBuff;
 }
+/*END*/
+
+/*Extra Classes and code*/
+struct Key
+{
+    Key(std::string _name, std::string _value){name = _name, value = _value;};
+    std::string name;
+    std::string value;
+};
+
+
+class JsonHandler
+{
+public:
+    JsonHandler(std::string jsonString){m_workString = jsonString;keys = std::vector<Key>();};
+    std::string GetVariable(std::string q)
+    {
+        size_t index = -1;
+        for(size_t i = 0; i < keys.size();i++)
+        {
+            if(keys.at(i).name == q)
+            {
+                index = i;
+                break;
+            }
+        }
+        if(index == -1)
+        {
+            return "";
+        }
+        return keys.at(index).value;
+    }
+    std::string* GetArray(std::string q, size_t &arrLen)
+    {
+        std::string* arr;
+        size_t index = -1;
+        for(size_t i = 0; i < keys.size();i++)
+        {
+            if(keys.at(i).name == q)
+            {
+                index = i;
+                break;
+            }
+        }
+        if(index == -1)
+        {
+            return nullptr;
+        }
+        size_t oldIndex = keys.at(index).value.find_first_of('"',0);
+        size_t discoverOldIndex = keys.at(index).value.find_first_of('"',0);
+        size_t tmpSize = 0;
+        while(true)
+        {
+            if(discoverOldIndex != std::string::npos)
+            {
+                tmpSize++;
+                discoverOldIndex = keys.at(index).value.find_first_of('"',discoverOldIndex+1);
+            }
+            else
+            {
+                break;
+            }
+        }
+        if(tmpSize%2 != 0)
+        {
+            //Json Syntax Error
+            return nullptr;
+        }
+        arrLen = tmpSize/2;
+        arr = new std::string[arrLen];
+        size_t count = 0;
+        while(true)
+        {
+            size_t newIndex = keys.at(index).value.find_first_of('"',oldIndex+1);
+            if(newIndex != std::string::npos)
+            {
+                arr[count] = keys.at(index).value.substr(oldIndex+1,newIndex-oldIndex);
+                count++;
+            }
+            else
+            {
+                break;
+            }
+            oldIndex = newIndex;
+        }
+        return arr;
+    }
+    bool Process()
+    {
+        if(m_workString.at(0) != '{' || m_workString.at(m_workString.length()-1) != '}')
+        {
+            return false;  
+        }
+        //m_workString.erase(std::remove_if(m_workString.begin(), m_workString.end(), ::isspace), m_workString.end());
+        bool spaceAllowed = false;
+        for(size_t i = 0; i < m_workString.length();i++)
+        {
+            if(m_workString.at(i) == '"')
+            {
+                spaceAllowed = !spaceAllowed;
+            }
+            if(m_workString.at(i) == ' ')
+            {
+                if(!spaceAllowed)
+                {
+                    m_workString.erase(i,1);
+                    i--;
+                }
+            }
+        }
+        size_t oldIndex = m_workString.find_first_of('"',0);
+        while(true)
+        {
+            size_t tmpIndex = m_workString.find_first_of('"',oldIndex+1);
+            if(tmpIndex == std::string::npos)
+            {
+                break;
+            }
+            if(m_workString.at(tmpIndex+1) != ':')
+            {
+                //Invalid Syntax
+                return false;
+            }
+            size_t comma = m_workString.find_first_of(',',tmpIndex);
+            size_t square = m_workString.find_first_of('[',tmpIndex);
+            if(square != std::string::npos)
+            {
+                size_t squareEnd = m_workString.find_first_of(']',tmpIndex);
+                if(squareEnd == std::string::npos)
+                {
+                    //Invalid Syntax
+                    return false;
+                }
+                else
+                {
+                    comma = squareEnd+1;
+                }
+            }
+            if(m_workString.at(comma) != ',')
+            {
+                //Invalid Syntax
+                return false;
+            }
+            if(m_workString.at(comma-1) != '"' && m_workString.at(comma-1) != ']')
+            {
+                //Invalid Syntax
+                return false;
+            }
+            
+            Key tmpKey = Key(m_workString.substr(oldIndex+1,tmpIndex),m_workString.substr(tmpIndex+2,comma-1-tmpIndex));
+            keys.push_back(tmpKey);
+            oldIndex = comma;
+            
+        }
+        return true;
+    }
+private:
+    std::string m_workString;
+    std::vector<Key> keys;
+};
 /*END*/
