@@ -8,6 +8,7 @@ public:
     Client();
     int Init();
     int GetInput();
+    int Aurthorize();
     Client(uint16_t port, std::string host);
 private:
 uint16_t m_port = 0;

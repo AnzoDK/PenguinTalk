@@ -70,4 +70,50 @@ std::string g_GetSocketError(int errCode)
             return "Unknown Error";
     }
 }
+/*Shifts buffer to the right ONLY if there are 0x0 bytes to overwrite*/
+void g_ShiftBufferRight(char* buffer, int bufferSize, int shift)
+{
+    int activeIndex = -1;
+    for(int i = 0; i < bufferSize; i++)
+    {
+        if (buffer[bufferSize-1-i] != 0x0)
+        {
+            activeIndex = bufferSize-i-1;
+            break;
+        }
+    }
+    if(activeIndex == -1)
+    {
+        activeIndex = 0;
+    }
+    if(activeIndex+shift >= bufferSize || activeIndex == 0)
+    {
+        //No space for shift
+        std::cout << "No space for shift" << std::endl;
+        return;
+    }
+    for(int i = 0; i < activeIndex; i++)
+    {
+        buffer[activeIndex+shift-i] = buffer[activeIndex-i];
+    }
+    for(int i = 0; i < shift; i++)
+    {
+        buffer[i] = 0x0;
+    }
+}
+char* g_CopyBuffer(char* buffer, int start, int end)
+{
+    if(start > end)
+    {
+        //INVALID
+        return nullptr;
+    }
+    int len = end-start;
+    char* newBuff = new char[len];
+    for(int i = 0; i < len; i++)
+    {
+        newBuff[i] = buffer[start+i];
+    }
+    return newBuff;
+}
 /*END*/

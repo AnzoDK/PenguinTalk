@@ -59,6 +59,39 @@ int Client::GetInput()
     return 0;
 }
 #endif
+#ifdef __linux__
+int Client::Aurthorize()
+{
+    printf("Please enter a username: ");
+    bzero(m_msgBuffer,256);
+    fgets(m_msgBuffer,250,stdin);
+    g_ShiftBufferRight(m_msgBuffer,256,5);
+    m_msgBuffer[0] = 'c';
+    m_msgBuffer[1] = 'r';
+    m_msgBuffer[2] = 'e';
+    m_msgBuffer[3] = 'd';
+    m_msgBuffer[4] = '=';
+    int n = write(m_fd,m_msgBuffer,strlen(m_msgBuffer));
+    if(n < 0)
+    {
+        return SOCKET_WRITE_ERROR;
+    }
+    bzero(m_msgBuffer,256);
+    n = read(m_fd,m_msgBuffer,255);
+    if(n < 0)
+    {
+        return SOCKET_READ_ERROR;
+    }
+    printf("%s\n",m_msgBuffer);
+    close(m_fd);
+    return 0;
+}
+#elif _WIN32
+int Client::Aurthorize()
+{
+    return -1;
+}
+#endif
 
 #ifdef _WIN32
 int Client::GetInput()

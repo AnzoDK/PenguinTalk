@@ -1,6 +1,6 @@
 CXX:=g++
-SERVER_FLAGS:= -std=c++17 -D __linux__
-CLIENT_FLAGS:= -std=c++17 -D __linux__´
+SERVER_FLAGS:= -pthread -std=c++17 -D __linux__
+CLIENT_FLAGS:= -pthread -std=c++17 -D __linux__´
 SERVER_LINK:= -lpthread
 CLIENT_LINK:= -lpthread
 SERVER_OUT:=server.out
