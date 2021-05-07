@@ -1,15 +1,17 @@
 CXX:=g++
 SERVER_FLAGS:= -std=c++17 -D __linux__
 CLIENT_FLAGS:= -std=c++17 -D __linux__´
-SERVER_LINK:= 
-CLIENT_LINK:=
+SERVER_LINK:= -lpthread
+CLIENT_LINK:= -lpthread
 SERVER_OUT:=server.out
 CLIENT_OUT:=client.out
 
 release:
+	make clean
 	make client CLIENT_FLAGS+=-O2
 	make server SERVER_FLAGS+=-O2
 debug:
+	make clean
 	make client CLIENT_FLAGS+=-g3
 	make server SERVER_FLAGS+=-g3
 client:

@@ -3,6 +3,7 @@
 
 // Inclutions for Linux libraries
 #ifdef __linux__
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
