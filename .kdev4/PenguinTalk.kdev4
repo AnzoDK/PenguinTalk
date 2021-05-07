@@ -1,13 +1,46 @@
-[CustomDefinesAndIncludes][ProjectPath0]
-Path=.
-parseAmbiguousAsCPP=true
-parserArguments=-ferror-limit=100 -fspell-checking -Wdocumentation -Wunused-parameter -Wunreachable-code -Wall -std=c++11
-parserArgumentsC=-ferror-limit=100 -fspell-checking -Wdocumentation -Wunused-parameter -Wunreachable-code -Wall -std=c99
-parserArgumentsCuda=-ferror-limit=100 -fspell-checking -Wdocumentation -Wunused-parameter -Wunreachable-code -Wall -std=c++11
-parserArgumentsOpenCL=-ferror-limit=100 -fspell-checking -Wdocumentation -Wunused-parameter -Wunreachable-code -Wall -cl-std=CL1.1
+[Launch]
+Launch Configurations=Launch Configuration 0,Launch Configuration 1
 
-[CustomDefinesAndIncludes][ProjectPath0][Compiler]
-Name=Clang
+[Launch][Launch Configuration 0]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=Server
+Type=Native Application
 
-[CustomDefinesAndIncludes][ProjectPath0][Includes]
-1=/home/anzo/Projects/PenguinTalk/include
+[Launch][Launch Configuration 0][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=
+Executable=file:///home/anzo/Storage/Drive2/Projects/PenguinTalk/server.out
+External Terminal=konsole --noclose --workdir %workdir -e %exe
+Kill Before Executing Again=4194304
+Project Target=
+Use External Terminal=false
+Working Directory=
+isExecutable=true
+
+[Launch][Launch Configuration 1]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=Client
+Type=Native Application
+
+[Launch][Launch Configuration 1][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=
+Executable=file:///home/anzo/Storage/Drive2/Projects/PenguinTalk/client.out
+External Terminal=konsole --noclose --workdir %workdir -e %exe
+Kill Before Executing Again=4194304
+Project Target=
+Use External Terminal=false
+Working Directory=
+isExecutable=true
+
+[MakeBuilder]
+Default Target=debug
+
+[Project]
+VersionControlSupport=kdevgit
