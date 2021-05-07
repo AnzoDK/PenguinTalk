@@ -86,6 +86,17 @@ int Client::GetInput()
 int main()
 {
     Client c = Client();
-    c.Init();
-    c.GetInput();
+    int err = c.Init();
+    if (err != 0)
+    {
+        std::cout << g_GetInitError(err) << std::endl;
+        exit(1);
+    }
+    err = c.GetInput();
+    if (err != 0)
+    {
+        std::cout << g_GetSocketError(err) << std::endl;
+        exit(1);
+    }
+    return 0;
 }

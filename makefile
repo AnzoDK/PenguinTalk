@@ -1,6 +1,6 @@
 CXX:=g++
-SERVER_FLAGS:= -std=c++17
-CLIENT_FLAGS:= -std=c++17
+SERVER_FLAGS:= -std=c++17 -D __linux__
+CLIENT_FLAGS:= -std=c++17 -D __linux__´
 SERVER_LINK:= 
 CLIENT_LINK:=
 SERVER_OUT:=server.out
