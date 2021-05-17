@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <filesystem>
 // Inclutions for Linux libraries
 #ifdef __linux__
 #include <pthread.h>
@@ -28,6 +29,9 @@
 
 #define DEFAULT_PORT 44344
 #define DEFAULT_HOST "LocalHost"
+
+namespace fs = std::filesystem;
+
 /*ENUMS*/
 enum InitStatus{CONN_SUCCESS=0, CONN_FAILED, PORT_IN_USE, BIND_FAILED, NO_HOST, CONN_ERROR};
 enum ErrorState{NO_ERROR=0, SOCKET_READ_ERROR, SOCKET_WRITE_ERROR, ACCEPT_ERROR};

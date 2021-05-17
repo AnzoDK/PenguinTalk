@@ -15,6 +15,13 @@ int Server::Init(int maxThreads)
     WSADATA wsaData;
     WSAStartup(wV, &wsaData);
 #endif
+    m_DBMan = DBManager();
+    if(!fs::exists("./PenguinTalkDB.sdb"))
+    {
+        m_DBMan.CreateDB("./PenguinTalkDB.sdb");
+    }    
+    m_DBMan.LoadDB("./PenguinTalkDB.sdb");
+    std::cout << m_DBMan.Error() << std::endl;
     m_maxThreads = maxThreads;
     m_threadIDs = new int[m_maxThreads];
     m_fd = socket(AF_INET,SOCK_STREAM,0);

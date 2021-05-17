@@ -12,9 +12,11 @@ public:
     Server(int port, std::string host);
     int Init(int maxThreads=5);
     int Start();
+    ~Server(){}
 
 private:
     char m_msgBuffer[256];
+    DBManager m_DBMan;
     int m_port = 0;
     std::string m_host = "";
     int m_maxThreads = 0;
