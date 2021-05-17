@@ -63,7 +63,7 @@ int Server::Start()
         //Assign name to client here
     }
     }
-    return NONE;
+    return NO_ERROR;
 }
 #endif
 
@@ -88,7 +88,7 @@ int Server::Start()
     closesocket(acc_socket);
     closesocket(m_fd);
     std::cout << std::string(m_msgBuffer) << std::endl;
-    return NONE;
+    return NO_ERROR;
 }
 #endif
 

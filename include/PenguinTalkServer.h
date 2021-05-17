@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <algorithm>
+#include "stoopidDB.h"
 #include "PenguinTalkCommon.h"
 
 

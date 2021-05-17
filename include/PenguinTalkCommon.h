@@ -30,7 +30,7 @@
 #define DEFAULT_HOST "LocalHost"
 /*ENUMS*/
 enum InitStatus{CONN_SUCCESS=0, CONN_FAILED, PORT_IN_USE, BIND_FAILED, NO_HOST, CONN_ERROR};
-enum ErrorState{NONE=0, SOCKET_READ_ERROR, SOCKET_WRITE_ERROR, ACCEPT_ERROR};
+enum ErrorState{NO_ERROR=0, SOCKET_READ_ERROR, SOCKET_WRITE_ERROR, ACCEPT_ERROR};
 /*END*/
 
 /*Global Functions*/
@@ -120,9 +120,9 @@ char* g_CopyBuffer(char* buffer, int start, int end)
 /*END*/
 
 /*Extra Classes and code*/
-struct Key
+struct JsonKey
 {
-    Key(std::string _name, std::string _value){name = _name, value = _value;};
+    JsonKey(std::string _name, std::string _value){name = _name, value = _value;};
     std::string name;
     std::string value;
 };
@@ -131,7 +131,7 @@ struct Key
 class JsonHandler
 {
 public:
-    JsonHandler(std::string jsonString){m_workString = jsonString;keys = std::vector<Key>();};
+    JsonHandler(std::string jsonString){m_workString = jsonString;keys = std::vector<JsonKey>();};
     std::string GetVariable(std::string q)
     {
         size_t index = -1;
@@ -266,7 +266,7 @@ public:
                 return false;
             }
             
-            Key tmpKey = Key(m_workString.substr(oldIndex+1,tmpIndex),m_workString.substr(tmpIndex+2,comma-1-tmpIndex));
+            JsonKey tmpKey = JsonKey(m_workString.substr(oldIndex+1,tmpIndex),m_workString.substr(tmpIndex+2,comma-1-tmpIndex));
             keys.push_back(tmpKey);
             oldIndex = comma;
             
@@ -275,6 +275,6 @@ public:
     }
 private:
     std::string m_workString;
-    std::vector<Key> keys;
+    std::vector<JsonKey> keys;
 };
 /*END*/
