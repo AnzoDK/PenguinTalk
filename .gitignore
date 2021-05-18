@@ -3,3 +3,4 @@ Debug/*
 StoopidDB/*
 StoopidDB
 *.sdb
+*.pem
