@@ -20,6 +20,10 @@
 #include <openssl/bio.h>
 #include <openssl/x509.h>
 #include <openssl/rsa.h>
+#include <openssl/applink.c>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+
 #endif
 
 // Inclustions for Windows libraries

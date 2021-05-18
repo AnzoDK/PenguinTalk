@@ -146,6 +146,10 @@ int Server::Init(int maxThreads)
     WSADATA wsaData;
     WSAStartup(wV, &wsaData);
 #endif
+    OpenSSL_add_all_algorithms();
+    OpenSSL_add_all_ciphers();
+    SSL_library_init();
+    SSL_load_error_strings();
     m_msgBuffer = new char[m_msgSize];
     if (m_PrepareDB() == false)
     {
@@ -204,6 +208,7 @@ int Server::Start()
     if(std::string(g_CopyBuffer(m_msgBuffer,0,10)) == "AUTH_START")
     {
         //Await client to send auth data
+        X509* x = X509_new();
         n = write(acc_socket,"CONFIRMED",9);
         bzero(m_msgBuffer,m_msgSize);
         m_SetSocketTimeout(acc_socket,15);
