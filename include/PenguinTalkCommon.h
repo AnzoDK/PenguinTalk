@@ -14,6 +14,12 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <openssl/aes.h>
+#include <openssl/evp.h>
+#include <openssl/pem.h>
+#include <openssl/bio.h>
+#include <openssl/x509.h>
+#include <openssl/rsa.h>
 #endif
 
 // Inclustions for Windows libraries
