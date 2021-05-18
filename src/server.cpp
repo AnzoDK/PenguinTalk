@@ -8,6 +8,137 @@ Server::Server()
     m_host = DEFAULT_HOST;
     m_port = DEFAULT_PORT;
 }
+void Server::m_CheckCertificate()
+{
+    if(fs::exists("cert.pem"))
+    {
+        std::cout << TERMINAL_GREEN << "Certificate Exists!" << TERMINAL_NOCOLOR << std::endl;
+    }
+    else
+    {
+        std::cout << TERMINAL_CYAN << "Generating Certificate" << TERMINAL_NOCOLOR << std::endl;
+        //generate
+        EVP_PKEY* key = EVP_PKEY_new();
+        BIGNUM* bn = BN_new();
+        BN_set_word(bn,RSA_F4);
+        
+        RSA* rsa = RSA_new();
+        RSA_generate_key_ex(
+            rsa, //RSA structure
+            2048, //Bitlengh
+            bn, //bn structure
+            0
+        );
+        BN_free(bn);
+        EVP_PKEY_assign_RSA(key,rsa);
+        X509* x509 = X509_new();
+        ASN1_INTEGER_set(X509_get_serialNumber(x509),1);
+        X509_gmtime_adj(X509_get_notBefore(x509), 0);
+        X509_gmtime_adj(X509_get_notAfter(x509), 31536000L);
+        X509_set_pubkey(x509, key);
+        X509_NAME* name = X509_get_subject_name(x509);
+        X509_NAME_add_entry_by_txt(name, "C",  MBSTRING_ASC,
+                           (unsigned char *)"DK", -1, -1, 0);
+        X509_NAME_add_entry_by_txt(name, "O",  MBSTRING_ASC,
+                           (unsigned char *)"Rosenoern Productions", -1, -1, 0);
+        X509_NAME_add_entry_by_txt(name, "CN", MBSTRING_ASC,
+                           (unsigned char *)"localhost", -1, -1, 0);
+        X509_set_issuer_name(x509, name);
+        X509_sign(x509, key, EVP_sha1());
+        FILE* f = fopen("key.pem","wb");
+        system("chmod 600 key.pem");
+        PEM_write_PrivateKey(f,key,NULL,NULL,0,NULL,NULL);
+        f = fopen("cert.pem", "wb");
+        PEM_write_X509(
+            f, //write the certificate to the file
+            x509 //certificate
+        );
+        EVP_PKEY_free(key);
+        
+    }
+}
+
+void Server::m_SetSocketTimeout(int fd, int seconds)
+{
+    timeval tv;
+    tv.tv_sec = seconds;
+    tv.tv_usec = 0;
+    setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO,&tv, sizeof(tv));
+}
+std::string Server::m_GenerateToken(std::string userName)
+{
+    Key* cond = new Key[1];
+    cond[0] = Key("username",userName);
+    uint64_t results = 0;
+    DBRow* rows = m_DBMan.GetRowsWhere("Users",cond,1,results);
+    if(results == 0)
+    {
+        //Server error
+        std::cout << TERMINAL_RED << "INTERNAL SERVER ERROR" << TERMINAL_NOCOLOR << std::endl;
+        return "";
+    }
+    std::string userID = rows[0].Find("id").value;
+    cond[0] = Key("userId",userID);
+    delete[] rows;
+    std::string token = "";
+    rows = m_DBMan.GetRowsWhere("Tokens",cond,1,results);
+    if(results == 0)
+    {
+        
+    }
+    else
+    {
+       token = rows[0].Find("token").value; 
+    }
+    delete[] cond;
+    return token;
+}
+
+int Server::m_PrepareDB()
+{
+    m_DBMan = DBManager();
+    if(!fs::exists("./PenguinTalkDB.sdb"))
+    {
+        m_DBMan.CreateDB("./PenguinTalkDB.sdb");
+        m_DBMan.LoadDB("./PenguinTalkDB.sdb");
+        DBColumn* columns = new DBColumn[3];
+        columns[0] = DBColumn("id",INT,8,PRIMARY_KEY | NOT_NULL | AUTO_INCREMENT);
+        columns[1] = DBColumn("username",VARCHAR,256,NOT_NULL);
+        columns[2] = DBColumn("passhash",VARCHAR,256,NOT_NULL);
+        bool res = m_DBMan.CreateTable("Users",3,columns);
+        if(res == 0)
+        {
+            return res;
+        }
+        delete[] columns;
+        columns = new DBColumn[3];
+        columns[0] = DBColumn("id",INT,8,PRIMARY_KEY | NOT_NULL | AUTO_INCREMENT);
+        columns[1] = DBColumn("userId",INT,8,NOT_NULL);
+        columns[2] = DBColumn("token",VARCHAR,256,NOT_NULL);
+        res = m_DBMan.CreateTable("Tokens",3,columns);
+        /*DBRow row = DBRow();
+        row.InsertData("username","AnzoDK");
+        row.InsertData("passhash","");
+        m_DBMan.InsertRow("Users",row);
+        //Debug
+        uint64_t results = 0;
+        Key* conditions = new Key[1];
+        conditions[0] = Key("id","0");
+        DBRow* out = m_DBMan.GetRowsWhere("Users",conditions,1,results);
+        for(uint64_t i = 0; i < results; i++)
+        {
+            std::cout << TERMINAL_GREEN << "User: id: " << out[i].Find("id").value << " username: " << out[i].Find("username").value << " hash: " << out[i].Find("passhash").value << TERMINAL_NOCOLOR << std::endl;
+        }*/
+        
+        return res;
+        
+    }
+    else
+    {
+        return m_DBMan.LoadDB("./PenguinTalkDB.sdb");
+    }
+}
+
 int Server::Init(int maxThreads)
 {
 #ifdef _WIN32
@@ -15,16 +146,23 @@ int Server::Init(int maxThreads)
     WSADATA wsaData;
     WSAStartup(wV, &wsaData);
 #endif
-    m_DBMan = DBManager();
-    if(!fs::exists("./PenguinTalkDB.sdb"))
+    m_msgBuffer = new char[m_msgSize];
+    if (m_PrepareDB() == false)
     {
-        m_DBMan.CreateDB("./PenguinTalkDB.sdb");
-    }    
-    m_DBMan.LoadDB("./PenguinTalkDB.sdb");
-    std::cout << m_DBMan.Error() << std::endl;
+        std::cout << TERMINAL_RED << "Failed to prepare DB" << std::endl;
+        std::cout << m_DBMan.Error() << TERMINAL_NOCOLOR << std::endl;
+        
+    }
+    else
+    {
+        std::cout << TERMINAL_GREEN << "DB Prepared!" << TERMINAL_NOCOLOR << std::endl;
+    }
+    m_CheckCertificate();
     m_maxThreads = maxThreads;
+    std::cout << "Setting max connections to " << std::to_string(m_maxThreads) << std::endl;
     m_threadIDs = new int[m_maxThreads];
     m_fd = socket(AF_INET,SOCK_STREAM,0);
+    m_SetSocketTimeout(m_fd,15);
     if(m_fd < 0)
     {
         return CONN_FAILED;
@@ -54,20 +192,76 @@ int Server::Start()
     {
         return ACCEPT_ERROR;
     }
-    bzero(m_msgBuffer,256);
-    int n = read(acc_socket,m_msgBuffer,255);
+    bzero(m_msgBuffer,m_msgSize);
+    int n = read(acc_socket,m_msgBuffer,m_msgSize-1);
     if(n < 0)
     {
         return SOCKET_READ_ERROR;
     }
-    n = write(acc_socket,"Data Recieved",13);
-    close(acc_socket);
+    //close(acc_socket);
     //close(m_fd);
     std::cout << std::string(m_msgBuffer) << std::endl;
-    if(std::string(g_CopyBuffer(m_msgBuffer,0,5)) == "cred=")
+    if(std::string(g_CopyBuffer(m_msgBuffer,0,10)) == "AUTH_START")
     {
-        //TODO
-        //Assign name to client here
+        //Await client to send auth data
+        n = write(acc_socket,"CONFIRMED",9);
+        bzero(m_msgBuffer,m_msgSize);
+        m_SetSocketTimeout(acc_socket,15);
+        n = read(acc_socket,m_msgBuffer,m_msgSize);
+        if(n == 0)
+        {
+            //Timed out
+            std::cout << TERMINAL_YELLOW << "Timed out" << TERMINAL_NOCOLOR << std::endl;
+        }
+        std::string recvString = std::string(m_msgBuffer,n);
+        bzero(m_msgBuffer,m_msgSize);
+        JsonHandler json = JsonHandler(recvString);
+        if(!json.Process())
+        {
+            std::cout << TERMINAL_RED << "Invalid Json Recvieved" << TERMINAL_NOCOLOR << std::endl;
+            close(acc_socket);
+        }
+        else
+        {
+          std::string hash = "";
+          Key* cond = new Key[1];
+          cond[0] = Key("username",json.GetVariable("user"));
+          uint64_t results = 0;
+          DBRow* r = m_DBMan.GetRowsWhere("Users",cond,1,results);
+          if(results!=0)
+          {
+              hash = r[0].Find("passhash").value;
+          }
+          else
+          {
+              //invalid user
+              std::string mes = "Invalid User";
+              write(acc_socket, mes.c_str(),mes.length());
+              close(acc_socket);
+          }
+          delete[] cond;
+          if(hash == json.GetVariable("hash"))
+          {
+              //Auth!
+              std::string mes = "OK";
+              write(acc_socket,mes.c_str(),mes.length());
+              std::string token = m_GenerateToken(json.GetVariable("user"));
+              std::string jsonMsg = "{\"AuthToken\":\"";
+              jsonMsg += token;
+              jsonMsg += "\"";
+              write(acc_socket, jsonMsg.c_str(),jsonMsg.length());
+              
+          }
+          else
+          {
+              std::string mes = "Invalid User";
+              write(acc_socket, mes.c_str(),mes.length());
+              close(acc_socket);
+              
+          }
+          
+        }
+        
     }
     }
     return NO_ERROR;

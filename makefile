@@ -1,7 +1,7 @@
 CXX:=g++
-SERVER_FLAGS:= -pthread -std=c++17 -D __linux__
-CLIENT_FLAGS:= -pthread -std=c++17 -D __linux__ -I./StoopidDB
-SERVER_LINK:= -lpthread
+SERVER_FLAGS:= -pthread -std=c++17 -D __linux__ -I./StoopidDB
+CLIENT_FLAGS:= -pthread -std=c++17 -D __linux__ 
+SERVER_LINK:= -lpthread -lssl -lcrypto
 CLIENT_LINK:= -lpthread
 SERVER_OUT:=server.out
 CLIENT_OUT:=client.out
@@ -23,6 +23,8 @@ server:
 clean:
 	make removeStoopidDB
 	-rm *.out
+	-rm *.sdb
+	-rm *.pem
 removeStoopidDB:
 	-rm -rf ./StoopidDB
 get_DB_debug:

@@ -5,6 +5,16 @@
 #include "PenguinTalkCommon.h"
 
 
+
+struct Connection
+{
+public:
+    Connection(){}
+    Connection(bool _state, int _fd){state = _state; id=_fd;}
+    int id = -1;
+    bool state = false;
+};
+
 class Server
 {
 public:
@@ -15,7 +25,12 @@ public:
     ~Server(){}
 
 private:
-    char m_msgBuffer[256];
+    int m_PrepareDB();
+    void m_SetSocketTimeout(int fd, int seconds);
+    std::string m_GenerateToken(std::string userName);
+    void m_CheckCertificate();
+    int m_msgSize = 2048;
+    char* m_msgBuffer;
     DBManager m_DBMan;
     int m_port = 0;
     std::string m_host = "";
