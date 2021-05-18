@@ -45,15 +45,13 @@ void Server::m_CheckCertificate()
                            (unsigned char *)"localhost", -1, -1, 0);
         X509_set_issuer_name(x509, name);
         X509_sign(x509, key, EVP_sha1());
-        //FILE* f = fopen("key.pem","wb");
-        //system("chmod 600 key.pem");
         BIO* bioKey = BIO_new_file("key.pem","w");
-        BIO* bioCert = BIO_new_file("cert.pem","2");
+        BIO* bioCert = BIO_new_file("cert.pem","w");
         PEM_write_bio_RSAPrivateKey(bioKey,rsa,NULL,NULL,0,NULL,NULL);
         PEM_write_bio_X509(bioCert,x509);
         EVP_PKEY_free(key);
-        BIO_free(bioKey);
-        BIO_free(bioCert);
+        BIO_free_all(bioKey);
+        BIO_free_all(bioCert);
         
     }
 }
