@@ -45,15 +45,15 @@ void Server::m_CheckCertificate()
                            (unsigned char *)"localhost", -1, -1, 0);
         X509_set_issuer_name(x509, name);
         X509_sign(x509, key, EVP_sha1());
-        FILE* f = fopen("key.pem","wb");
-        system("chmod 600 key.pem");
-        PEM_write_PrivateKey(f,key,NULL,NULL,0,NULL,NULL);
-        f = fopen("cert.pem", "wb");
-        PEM_write_X509(
-            f, //write the certificate to the file
-            x509 //certificate
-        );
+        //FILE* f = fopen("key.pem","wb");
+        //system("chmod 600 key.pem");
+        BIO* bioKey = BIO_new_file("key.pem","w");
+        BIO* bioCert = BIO_new_file("cert.pem","2");
+        PEM_write_bio_RSAPrivateKey(bioKey,rsa,NULL,NULL,0,NULL,NULL);
+        PEM_write_bio_X509(bioCert,x509);
         EVP_PKEY_free(key);
+        BIO_free(bioKey);
+        BIO_free(bioCert);
         
     }
 }
@@ -208,7 +208,8 @@ int Server::Start()
     if(std::string(g_CopyBuffer(m_msgBuffer,0,10)) == "AUTH_START")
     {
         //Await client to send auth data
-        X509* x = X509_new();
+        
+        
         n = write(acc_socket,"CONFIRMED",9);
         bzero(m_msgBuffer,m_msgSize);
         m_SetSocketTimeout(acc_socket,15);
