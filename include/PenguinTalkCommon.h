@@ -34,7 +34,7 @@
 #endif
 
 #define DEFAULT_PORT 44344
-#define DEFAULT_HOST "LocalHost"
+#define DEFAULT_HOST "localhost"
 
 namespace fs = std::filesystem;
 
