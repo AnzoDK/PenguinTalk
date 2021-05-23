@@ -5,7 +5,7 @@ SERVER_LINK:= -lpthread -lssl -lcrypto
 CLIENT_LINK:= -lpthread
 SERVER_OUT:=server.out
 CLIENT_OUT:=client.out
-
+ARCH_INSTALL:=0
 release:
 	make clean
 	make get_DB_optimized
@@ -28,6 +28,6 @@ clean:
 removeStoopidDB:
 	-rm -rf ./StoopidDB
 get_DB_debug:
-	./getDB.sh --debug
+	./getDB.sh --debug --install $(ARCH_INSTALL)
 get_DB_optimized:
-	./getDB.sh --optimize
+	./getDB.sh --optimize --install $(ARCH_INSTALL)
