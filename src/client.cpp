@@ -1,7 +1,10 @@
 #include "../include/PenguinTalkClient.h"
 #include <iostream>
 
-
+/*
+ DISCLAIMER:
+ THIS CLIENT IS NOT MEANT TO BE THE FINAL CLIENT AND SHOULD ONLY BE USED TO TEST THE CONNECTION BETWEEN THE SERVER AND A POTENTIAL CLIENT
+ */
 
 Client::Client()
 {

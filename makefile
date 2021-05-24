@@ -9,12 +9,12 @@ ARCH_INSTALL:=0
 release:
 	make clean
 	make get_DB_optimized
-	#make client CLIENT_FLAGS+=-O2
+	make client CLIENT_FLAGS+=-O2
 	make server SERVER_FLAGS+=-O2
 debug:
 	make clean
 	make get_DB_debug
-	#make client CLIENT_FLAGS+=-g3
+	make client CLIENT_FLAGS+=-g3
 	make server SERVER_FLAGS+=-g3
 client:
 	$(CXX) $(CLIENT_FLAGS) ./src/client.cpp -o $(CLIENT_OUT) $(CLIENT_LINK)
