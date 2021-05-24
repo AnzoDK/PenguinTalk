@@ -2,7 +2,7 @@ CXX:=g++
 SERVER_FLAGS:= -pthread -std=c++17 -D __linux__ -I./StoopidDB
 CLIENT_FLAGS:= -pthread -std=c++17 -D __linux__ 
 SERVER_LINK:= -lpthread -lssl -lcrypto
-CLIENT_LINK:= -lpthread
+CLIENT_LINK:= -lpthread -lssl -lcrypto
 SERVER_OUT:=server.out
 CLIENT_OUT:=client.out
 ARCH_INSTALL:=0

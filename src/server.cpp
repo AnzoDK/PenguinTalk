@@ -7,6 +7,7 @@ Server::Server()
 {
     m_host = DEFAULT_HOST;
     m_port = DEFAULT_PORT;
+    m_clientKey = EVP_PKEY_new();
 }
 void Server::m_CheckCertificate()
 {
@@ -50,6 +51,7 @@ void Server::m_CheckCertificate()
         PEM_write_bio_RSAPrivateKey(bioKey,rsa,NULL,NULL,0,NULL,NULL);
         PEM_write_bio_X509(bioCert,x509);
         EVP_PKEY_free(key);
+        X509_free(x509);
         BIO_free_all(bioKey);
         BIO_free_all(bioCert);
         
@@ -182,6 +184,72 @@ int Server::Init(int maxThreads)
 
 
 #ifdef __linux__
+void Server::m_InitEncrypt(int responseSocket)
+{
+    //Load Privatekey
+    BIO* pkey = BIO_new_file("./key.pem","rb");
+    
+    //Load Certificate (BIO can be used for openSSL functions)
+    BIO* pubKeyBio = /*BIO_new_file("./cert.pem","rb");*/BIO_new(BIO_s_mem());
+    
+    //Load Certificate for transport
+    std::ifstream in = std::ifstream("./cert.pem", std::ios::binary | std::ios::ate);
+    std::ifstream::pos_type pos = in.tellg();
+
+    std::vector<char> result(pos);
+
+    in.seekg(0, std::ios::beg);
+    in.read(&result[0], pos); //&result[0] is the same as result.data()
+    in.close();
+    
+    BIO_puts(pubKeyBio,&result[0]);
+    
+    //Create RSA handler
+    X509* x509 = X509_new();
+    PEM_read_bio_X509(pubKeyBio,&x509,NULL,NULL);
+    EVP_PKEY* pubKey = X509_get_pubkey(x509);
+    EVP_PKEY* privKey = EVP_PKEY_new();
+    PEM_read_bio_PrivateKey(pkey,&privKey,NULL,NULL);
+    RSA* pubRsa = RSA_new();
+    pubRsa = EVP_PKEY_get1_RSA(pubKey);
+    RSA* privRsa = EVP_PKEY_get1_RSA(privKey);
+    
+
+    
+    int n = write(responseSocket,&result[0],result.size());
+    bzero(m_msgBuffer,m_msgSize);
+    BIO_free_all(pkey);
+    BIO_free_all(pubKeyBio);
+    if(n <= 0)
+    {
+        std::cout << TERMINAL_RED <<"Failed to send certificate" << TERMINAL_NOCOLOR << std::endl;
+        close(responseSocket);
+        close(m_fd);
+        exit(1);
+    }
+    bzero(m_msgBuffer,RSA_size(pubRsa));
+    unsigned char* out = new unsigned char[RSA_size(pubRsa)];
+    n = read(responseSocket,m_msgBuffer,RSA_size(pubRsa));
+    if(n <= 0)
+    {
+        std::cout << TERMINAL_RED << "Connection Interupted" << TERMINAL_NOCOLOR << std::endl;
+        close(responseSocket);
+        close(m_fd);
+        exit(1);
+    }
+    unsigned char* tmp = g_ToUnsignedBuffer(m_msgBuffer,RSA_size(pubRsa));
+    
+    RSA_private_decrypt(RSA_size(pubRsa),tmp,out,privRsa,RSA_PKCS1_OAEP_PADDING);
+    
+    char* sOut = g_ToSignedBuffer(out,RSA_size(privRsa));
+    std::cout << "Decrypted: " << std::string(sOut) << std::endl;
+    delete[] out;
+    delete[] tmp;
+    delete[] sOut;
+    RSA_free(pubRsa);
+    RSA_free(privRsa);
+}
+
 int Server::Start()
 {
     listen(m_fd,m_maxThreads);
@@ -206,16 +274,20 @@ int Server::Start()
     if(std::string(g_CopyBuffer(m_msgBuffer,0,10)) == "AUTH_START")
     {
         //Await client to send auth data
-        
-        
         n = write(acc_socket,"CONFIRMED",9);
         bzero(m_msgBuffer,m_msgSize);
         m_SetSocketTimeout(acc_socket,15);
+        
+        m_InitEncrypt(acc_socket);
+        
         n = read(acc_socket,m_msgBuffer,m_msgSize);
-        if(n == 0)
+        if(n <= 0)
         {
             //Timed out
             std::cout << TERMINAL_YELLOW << "Timed out" << TERMINAL_NOCOLOR << std::endl;
+            close(acc_socket);
+            close(m_fd);
+            exit(1);
         }
         std::string recvString = std::string(m_msgBuffer,n);
         bzero(m_msgBuffer,m_msgSize);
@@ -300,6 +372,16 @@ int Server::Start()
 int main()
 {
     Server s = Server();
-    s.Init();
-    s.Start();
+    int err = s.Init();
+    if(err != 0)
+    {
+        std::cout << g_GetInitError(err) << std::endl;
+        exit(1);
+    }
+    err = s.Start();
+    if(err != 0)
+    {
+        std::cout << g_GetSocketError(err) << std::endl;
+        exit(1);
+    }
 }

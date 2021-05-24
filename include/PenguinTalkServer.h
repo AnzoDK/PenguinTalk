@@ -22,7 +22,7 @@ public:
     Server(int port, std::string host);
     int Init(int maxThreads=5);
     int Start();
-    ~Server(){}
+    ~Server(){EVP_PKEY_free(m_clientKey);}
 
 private:
     int m_PrepareDB();
@@ -36,8 +36,10 @@ private:
     std::string m_host = "";
     int m_maxThreads = 0;
     int* m_threadIDs = nullptr;
+    void m_InitEncrypt(int responseSocket);
 #ifdef __linux__
     int m_fd = -1;
+    EVP_PKEY* m_clientKey;
 #elif _WIN32
     SOCKET m_fd = 0;
 #endif

@@ -68,11 +68,33 @@ std::string g_GetInitError(int errCode)
     }
 }
 
+//Returns array of same size as the input array
+unsigned char* g_ToUnsignedBuffer(char* in, int inSize)
+{
+   unsigned char* ret = new unsigned char[inSize];
+   for(int i = 0; i < inSize; i++)
+   {
+       ret[i] = static_cast<unsigned char>(in[i]);
+   }
+   return ret;
+}
+
+//Returns array of same size as the input array
+char* g_ToSignedBuffer(unsigned char* in, int inSize)
+{
+   char* ret = new char[inSize];
+   for(int i = 0; i < inSize; i++)
+   {
+       ret[i] = static_cast<char>(in[i]);
+   }
+   return ret;
+}
+
 std::string g_GetSocketError(int errCode)
 {
     switch(errCode)
     {
-        case NONE:
+        case NO_ERROR:
             return "No Error";
         case SOCKET_READ_ERROR:
             return "Failed to read from socket";
