@@ -37,7 +37,7 @@ int Client::Init()
     {
         return CONN_ERROR;
     }
-    return NONE;
+    return CONN_SUCCESS;
 }
 
 #ifdef __linux__

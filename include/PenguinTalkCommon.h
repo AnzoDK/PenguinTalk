@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <vector>
 #include <filesystem>
-// Inclutions for Linux libraries
+// Inclusions for Linux libraries
 #ifdef __linux__
 #include <pthread.h>
 #include <stdio.h>
