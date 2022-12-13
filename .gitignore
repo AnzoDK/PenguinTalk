@@ -6,3 +6,4 @@ StoopidDB
 *.pem
 backUp_dataBase
 *.zip
+*.o
