@@ -1,9 +1,7 @@
-#include "../include/PenguinTalkServer.h"
 #include <iostream>
+#include <Common/EncryptionManager/EncryptionManager.h>
 
-
-
-Server::Server()
+/*Server::Server()
 {
     m_host = DEFAULT_HOST;
     m_port = DEFAULT_PORT;
@@ -116,6 +114,7 @@ int Server::m_PrepareDB()
         columns[1] = DBColumn("userId",INT,8,NOT_NULL);
         columns[2] = DBColumn("token",VARCHAR,256,NOT_NULL);
         res = m_DBMan.CreateTable("Tokens",3,columns);
+        */
         /*DBRow row = DBRow();
         row.InsertData("username","AnzoDK");
         row.InsertData("passhash","");
@@ -129,7 +128,7 @@ int Server::m_PrepareDB()
         {
             std::cout << TERMINAL_GREEN << "User: id: " << out[i].Find("id").value << " username: " << out[i].Find("username").value << " hash: " << out[i].Find("passhash").value << TERMINAL_NOCOLOR << std::endl;
         }*/
-        
+ /*       
         return res;
         
     }
@@ -166,7 +165,7 @@ int Server::Init(int maxThreads)
     std::cout << "Setting max connections to " << std::to_string(m_maxThreads) << std::endl;
     m_threadIDs = new int[m_maxThreads];
     m_fd = socket(AF_INET,SOCK_STREAM,0);
-    m_SetSocketTimeout(m_fd,15);
+    //m_SetSocketTimeout(m_fd,15); //Wait for 15 seconds for a connection - Prob pretty bad
     if(m_fd < 0)
     {
         return CONN_FAILED;
@@ -188,10 +187,10 @@ void Server::m_InitEncrypt(int responseSocket)
 {
     //Load Privatekey
     BIO* pkey = BIO_new_file("./key.pem","rb");
-    
+    */
     //Load Certificate (BIO can be used for openSSL functions)
-    BIO* pubKeyBio = /*BIO_new_file("./cert.pem","rb");*/BIO_new(BIO_s_mem());
-    
+    /*BIO* pubKeyBio = *//*BIO_new_file("./cert.pem","rb");*//*BIO_new(BIO_s_mem());*/
+/*    
     //Load Certificate for transport
     std::ifstream in = std::ifstream("./cert.pem", std::ios::binary | std::ios::ate);
     std::ifstream::pos_type pos = in.tellg();
@@ -255,90 +254,90 @@ int Server::Start()
     listen(m_fd,m_maxThreads);
     while(1)
     {
-    sockaddr_in client_addr = sockaddr_in();
-    socklen_t client_addr_len = sizeof(client_addr);
-    int acc_socket = accept(m_fd,(sockaddr*)&client_addr,&client_addr_len);
-    if(acc_socket < 0)
-    {
-        return ACCEPT_ERROR;
-    }
-    bzero(m_msgBuffer,m_msgSize);
-    int n = read(acc_socket,m_msgBuffer,m_msgSize-1);
-    if(n < 0)
-    {
-        return SOCKET_READ_ERROR;
-    }
-    //close(acc_socket);
-    //close(m_fd);
-    std::cout << std::string(m_msgBuffer) << std::endl;
-    if(std::string(g_CopyBuffer(m_msgBuffer,0,10)) == "AUTH_START")
-    {
-        //Await client to send auth data
-        n = write(acc_socket,"CONFIRMED",9);
-        bzero(m_msgBuffer,m_msgSize);
-        m_SetSocketTimeout(acc_socket,15);
-        
-        m_InitEncrypt(acc_socket);
-        
-        n = read(acc_socket,m_msgBuffer,m_msgSize);
-        if(n <= 0)
+        sockaddr_in client_addr = sockaddr_in();
+        socklen_t client_addr_len = sizeof(client_addr);
+        int acc_socket = accept(m_fd,(sockaddr*)&client_addr,&client_addr_len);
+        if(acc_socket < 0)
         {
-            //Timed out
-            std::cout << TERMINAL_YELLOW << "Timed out" << TERMINAL_NOCOLOR << std::endl;
-            close(acc_socket);
-            close(m_fd);
-            exit(1);
+            return ACCEPT_ERROR;
         }
-        std::string recvString = std::string(m_msgBuffer,n);
         bzero(m_msgBuffer,m_msgSize);
-        JsonHandler json = JsonHandler(recvString);
-        if(!json.Process())
+        int n = read(acc_socket,m_msgBuffer,m_msgSize-1);
+        if(n < 0)
         {
-            std::cout << TERMINAL_RED << "Invalid Json Recvieved" << TERMINAL_NOCOLOR << std::endl;
-            close(acc_socket);
+            return SOCKET_READ_ERROR;
         }
-        else
+        //close(acc_socket);
+        //close(m_fd);
+        std::cout << std::string(m_msgBuffer) << std::endl;
+        if(std::string(g_CopyBuffer(m_msgBuffer,0,10)) == "AUTH_START")
         {
-          std::string hash = "";
-          Key* cond = new Key[1];
-          cond[0] = Key("username",json.GetVariable("user"));
-          uint64_t results = 0;
-          DBRow* r = m_DBMan.GetRowsWhere("Users",cond,1,results);
-          if(results!=0)
-          {
-              hash = r[0].Find("passhash").value;
-          }
-          else
-          {
-              //invalid user
-              std::string mes = "Invalid User";
-              write(acc_socket, mes.c_str(),mes.length());
-              close(acc_socket);
-          }
-          delete[] cond;
-          if(hash == json.GetVariable("hash"))
-          {
-              //Auth!
-              std::string mes = "OK";
-              write(acc_socket,mes.c_str(),mes.length());
-              std::string token = m_GenerateToken(json.GetVariable("user"));
-              std::string jsonMsg = "{\"AuthToken\":\"";
-              jsonMsg += token;
-              jsonMsg += "\"";
-              write(acc_socket, jsonMsg.c_str(),jsonMsg.length());
+            //Await client to send auth data
+            n = write(acc_socket,"CONFIRMED",9);
+            bzero(m_msgBuffer,m_msgSize);
+            m_SetSocketTimeout(acc_socket,15);
+        
+            m_InitEncrypt(acc_socket);
+        
+            n = read(acc_socket,m_msgBuffer,m_msgSize);
+            if(n <= 0)
+            {
+                //Timed out
+                std::cout << TERMINAL_YELLOW << "Timed out" << TERMINAL_NOCOLOR << std::endl;
+                close(acc_socket);
+                close(m_fd);
+                exit(1);
+            }
+            std::string recvString = std::string(m_msgBuffer,n);
+            bzero(m_msgBuffer,m_msgSize);
+            JsonHandler json = JsonHandler(recvString);
+            if(!json.Process())
+            {
+                std::cout << TERMINAL_RED << "Invalid Json Recvieved" << TERMINAL_NOCOLOR << std::endl;
+                close(acc_socket);
+            }
+            else
+            {
+                std::string hash = "";
+                Key* cond = new Key[1];
+                cond[0] = Key("username",json.GetVariable("user"));
+                uint64_t results = 0;
+                DBRow* r = m_DBMan.GetRowsWhere("Users",cond,1,results);
+                if(results!=0)
+                {
+                    hash = r[0].Find("passhash").value;
+                }
+                else
+                {
+                    //invalid user
+                    std::string mes = "Invalid User";
+                    write(acc_socket, mes.c_str(),mes.length());
+                    close(acc_socket);
+                }
+            delete[] cond;
+            if(hash == json.GetVariable("hash"))
+            {
+                //Auth!
+                std::string mes = "OK";
+                write(acc_socket,mes.c_str(),mes.length());
+                std::string token = m_GenerateToken(json.GetVariable("user"));
+                std::string jsonMsg = "{\"AuthToken\":\"";
+                jsonMsg += token;
+                jsonMsg += "\"";
+                write(acc_socket, jsonMsg.c_str(),jsonMsg.length());
               
-          }
-          else
-          {
-              std::string mes = "Invalid User";
-              write(acc_socket, mes.c_str(),mes.length());
-              close(acc_socket);
+            }
+            else
+            {
+                std::string mes = "Invalid User";
+                write(acc_socket, mes.c_str(),mes.length());
+                close(acc_socket);
               
-          }
+            }
           
-        }
+            }
         
-    }
+        }
     }
     return NO_ERROR;
 }
@@ -368,20 +367,5 @@ int Server::Start()
     return NO_ERROR;
 }
 #endif
+*/
 
-int main()
-{
-    Server s = Server();
-    int err = s.Init();
-    if(err != 0)
-    {
-        std::cout << g_GetInitError(err) << std::endl;
-        exit(1);
-    }
-    err = s.Start();
-    if(err != 0)
-    {
-        std::cout << g_GetSocketError(err) << std::endl;
-        exit(1);
-    }
-}

@@ -1,4 +1,4 @@
-#include "../include/PenguinTalkClient.h"
+#include "<Client/PenguinTalkClient.h>"
 #include <iostream>
 
 /*

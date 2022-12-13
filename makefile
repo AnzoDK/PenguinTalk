@@ -1,6 +1,7 @@
 CXX:=g++
-SERVER_FLAGS:= -pthread -std=c++17 -D __linux__ -I./StoopidDB
-CLIENT_FLAGS:= -pthread -std=c++17 -D __linux__ 
+CXX_COMMON_FLAGS:= -I./include -I./include/Common
+SERVER_FLAGS:= -pthread -std=c++17 -D __linux__ -I./StoopidDB $(CXX_COMMON_FLAGS)
+CLIENT_FLAGS:= -pthread -std=c++17 -D __linux__ $(CXX_COMMON_FLAGS)
 SERVER_LINK:= -lpthread -lssl -lcrypto
 CLIENT_LINK:= -lpthread -lssl -lcrypto
 SERVER_OUT:=server.out

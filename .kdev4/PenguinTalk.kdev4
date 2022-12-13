@@ -1,3 +1,6 @@
+[Buildset]
+BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+
 [CustomDefinesAndIncludes][ProjectPath0]
 Path=.
 parseAmbiguousAsCPP=true
@@ -8,6 +11,12 @@ parserArgumentsOpenCL=-ferror-limit=100 -fspell-checking -Wdocumentation -Wunuse
 
 [CustomDefinesAndIncludes][ProjectPath0][Compiler]
 Name=Clang
+
+[CustomDefinesAndIncludes][ProjectPath0][Includes]
+1=/home/anzo/Storage/Drive2/Projects/PenguinTalk/include
+2=/home/anzo/Storage/Drive2/Projects/PenguinTalk/include/Common
+3=/home/anzo/Storage/Drive2/Projects/PenguinTalk/include/Client
+4=/home/anzo/Storage/Drive2/Projects/PenguinTalk/include/Server
 
 [Launch]
 Launch Configurations=Launch Configuration 0,Launch Configuration 1

@@ -22,7 +22,7 @@
 #include <openssl/rsa.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
-
+#include <time.h>
 #endif
 
 // Inclustions for Windows libraries
@@ -36,8 +36,15 @@
 #define bcopy(b1,b2,len) (memmove((b2), (b1), (len)), (void) 0)
 #endif
 
+#define FPS(start) (CLOCKS_PER_SEC / (clock()-start))
 #define DEFAULT_PORT 44344
 #define DEFAULT_HOST "localhost"
+#ifndef __byte
+typedef unsigned char __byte;
+#ifndef byte
+typedef __byte byte;
+#endif
+#endif
 
 namespace fs = std::filesystem;
 
@@ -47,7 +54,7 @@ enum ErrorState{NO_ERROR=0, SOCKET_READ_ERROR, SOCKET_WRITE_ERROR, ACCEPT_ERROR}
 /*END*/
 
 /*Global Functions*/
-std::string g_GetInitError(int errCode)
+static std::string g_GetInitError(int errCode)
 {
     switch(errCode)
     {
@@ -69,7 +76,7 @@ std::string g_GetInitError(int errCode)
 }
 
 //Returns array of same size as the input array
-unsigned char* g_ToUnsignedBuffer(char* in, int inSize)
+static unsigned char* g_ToUnsignedBuffer(char* in, int inSize)
 {
    unsigned char* ret = new unsigned char[inSize];
    for(int i = 0; i < inSize; i++)
@@ -80,7 +87,7 @@ unsigned char* g_ToUnsignedBuffer(char* in, int inSize)
 }
 
 //Returns array of same size as the input array
-char* g_ToSignedBuffer(unsigned char* in, int inSize)
+static char* g_ToSignedBuffer(unsigned char* in, int inSize)
 {
    char* ret = new char[inSize];
    for(int i = 0; i < inSize; i++)
@@ -90,7 +97,7 @@ char* g_ToSignedBuffer(unsigned char* in, int inSize)
    return ret;
 }
 
-std::string g_GetSocketError(int errCode)
+static std::string g_GetSocketError(int errCode)
 {
     switch(errCode)
     {
@@ -107,7 +114,7 @@ std::string g_GetSocketError(int errCode)
     }
 }
 /*Shifts buffer to the right ONLY if there are 0x0 bytes to overwrite*/
-void g_ShiftBufferRight(char* buffer, int bufferSize, int shift)
+static void g_ShiftBufferRight(char* buffer, int bufferSize, int shift)
 {
     int activeIndex = -1;
     for(int i = 0; i < bufferSize; i++)
@@ -137,7 +144,7 @@ void g_ShiftBufferRight(char* buffer, int bufferSize, int shift)
         buffer[i] = 0x0;
     }
 }
-char* g_CopyBuffer(char* buffer, int start, int end)
+static char* g_CopyBuffer(char* buffer, int start, int end)
 {
     if(start > end)
     {

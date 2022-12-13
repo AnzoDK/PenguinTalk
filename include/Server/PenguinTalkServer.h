@@ -2,7 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include "stoopidDB.h"
-#include "PenguinTalkCommon.h"
+#include <Common/PenguinTalkCommon.h>
 
 
 
@@ -29,7 +29,7 @@ private:
     void m_SetSocketTimeout(int fd, int seconds);
     std::string m_GenerateToken(std::string userName);
     void m_CheckCertificate();
-    int m_msgSize = 2048;
+    int m_msgSize = 4096;
     char* m_msgBuffer;
     DBManager m_DBMan;
     int m_port = 0;
