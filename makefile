@@ -7,6 +7,7 @@ CLIENT_LINK:= -lpthread -lssl -lcrypto
 SERVER_OUT:=server.out
 CLIENT_OUT:=client.out
 ARCH_INSTALL:=0
+CLIENT_DIR:=./src/ClientTS
 release:
 	make clean
 	make get_DB_optimized
@@ -18,7 +19,9 @@ debug:
 	make client CLIENT_FLAGS+=-g3
 	make server SERVER_FLAGS+=-g3
 client:
-	$(CXX) $(CLIENT_FLAGS) ./src/client.cpp -o $(CLIENT_OUT) $(CLIENT_LINK)
+	# $(CXX) $(CLIENT_FLAGS) ./src/client.cpp -o $(CLIENT_OUT) $(CLIENT_LINK)
+	cd $(CLIENT_DIR)/penguin-talk-client && ng build
+	
 server:
 	$(CXX) $(SERVER_FLAGS) ./src/server.cpp -o $(SERVER_OUT) $(SERVER_LINK)
 clean:
