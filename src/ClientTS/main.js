@@ -29,7 +29,7 @@ function onReady() {
     patchIndex();
 
     // Create a new browser window
-    win = new BrowserWindow({width: 900, height: 6700});
+    let win = new BrowserWindow({width: 900, height: 6700});
 
     // Load the index.html file in the window
     win.loadURL(url.format({
