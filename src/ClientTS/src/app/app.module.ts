@@ -9,18 +9,25 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import * as Constants from './constants/constants';
+import { MatButtonModule } from '@angular/material/button';
+import { ConnectDialogComponent } from './connect-dialog/connect-dialog.component'
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ConnectDialogComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    Constants.angularMaterialModules
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
 
 
