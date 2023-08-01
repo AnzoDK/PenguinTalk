@@ -1,24 +1,24 @@
 #pragma once
-#include <Common/PenguinTalkCommon.h>
-#include <Common/EncryptionManager/EncryptionManager.h>
+#include "../PenguinTalkCommon.h"
+//#include "../EncryptionManager/EncryptionManager.h"
 
 class Encryptor;
 
 class ManagedBuffer
 {
 public:
-    ManagedBuffer();
+    ManagedBuffer(){};
     ManagedBuffer(size_t size);
     ManagedBuffer(const ManagedBuffer& buff);
     ManagedBuffer(byte* buffer, size_t bufferSize);
-    ~ManagedBuffer();
+    ~ManagedBuffer(){};
     size_t GetSize();
     void New(size_t size);
     void Clear();
     byte CopyRead(size_t index);
     byte& operator[](size_t index);
-    bool Encrypt(Encryptor& encryptor);
-    bool Decrypt(Encryptor& encryptor);
+    //bool Encrypt(Encryptor& encryptor);
+    //bool Decrypt(Encryptor& encryptor);
 private:
     void m_CloneBuffer(byte* buff, size_t size);
     void m_DeleteInternalBuffer();

@@ -1,5 +1,5 @@
 #include <iostream>
-#include <Common/EncryptionManager/EncryptionManager.h>
+#include "../../../include/Common/EncryptionManager/EncryptionManager.h"
 
 /*Server::Server()
 {

@@ -1,6 +1,6 @@
-#include <Server/PenguinTalkServer.h>
-#include <Common/ManagedBuffer/ManagedBuffer.h>
-#include <Common/EncryptionManager/EncryptionManager.h>
+//#include <Server/PenguinTalkServer.h>
+#include "../../include/Common/ManagedBuffer/ManagedBuffer.h"
+#include "../../include/Common/EncryptionManager/EncryptionManager.h"
 #include <iostream>
 
 char* getCmdOption(char ** begin, char ** end, const std::string & option)

@@ -1,6 +1,6 @@
 #pragma once
-#include <Common/EncryptionManager/RSAKey.h>
-#include <Common/ManagedBuffer/ManagedBuffer.h>
+#include "RSAKey.h"
+#include "../ManagedBuffer/ManagedBuffer.h"
 
 class ManagedBuffer;
 

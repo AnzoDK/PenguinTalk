@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include <Common/PenguinTalkCommon.h>
+#include "../PenguinTalkCommon.h"
 
 class RSAPublicKey
 {
