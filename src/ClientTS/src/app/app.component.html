@@ -1,3 +1,8 @@
 <div id="MainPage">
   <app-connect-dialog *ngIf="!isLoggedIn"></app-connect-dialog>
+  <button mat-flat-button 
+    (click)="ChangeColor()"
+    [class.active]="isActive">
+    {{status}}
+  </button>
 </div>
