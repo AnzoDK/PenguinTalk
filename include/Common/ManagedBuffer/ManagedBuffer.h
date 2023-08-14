@@ -7,16 +7,17 @@ class Encryptor;
 class ManagedBuffer
 {
 public:
-    ManagedBuffer(){};
+    ManagedBuffer();
     ManagedBuffer(size_t size);
     ManagedBuffer(const ManagedBuffer& buff);
     ManagedBuffer(byte* buffer, size_t bufferSize);
-    ~ManagedBuffer(){};
+    ~ManagedBuffer();
     size_t GetSize();
     void New(size_t size);
     void Clear();
     byte CopyRead(size_t index);
     byte& operator[](size_t index);
+    void Destory();
     //bool Encrypt(Encryptor& encryptor);
     //bool Decrypt(Encryptor& encryptor);
 private:

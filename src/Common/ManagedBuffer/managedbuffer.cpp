@@ -1,7 +1,10 @@
 #include <Common/ManagedBuffer/ManagedBuffer.h>
 #include <cstring>
 
-ManagedBuffer::ManagedBuffer(){}
+ManagedBuffer::ManagedBuffer()
+{
+    
+}
 
 ManagedBuffer::~ManagedBuffer()
 {
@@ -40,6 +43,13 @@ byte ManagedBuffer::CopyRead(size_t index)
     return m_buffer[index];
 }
 
+void ManagedBuffer::Destory()
+{
+    m_DeleteInternalBuffer();
+}
+
+
+/*
 bool ManagedBuffer::Decrypt(Encryptor& encryptor)
 {
     if(m_buffer == 0x0)
@@ -47,18 +57,20 @@ bool ManagedBuffer::Decrypt(Encryptor& encryptor)
         return false;
     }
     return encryptor.DecryptBuffer(*this);
-}
+}*/
 
-bool ManagedBuffer::Encrypt(Encryptor& encryptor)
-{
-    if(m_buffer == 0x0)
-    {
-        return false;
-    }
-    return encryptor.EncryptBuffer(*this);
-}
+// bool ManagedBuffer::Encrypt(Encryptor& encryptor)
+// {
+//     if(m_buffer == 0x0)
+//     {
+//         return false;
+//     }
+//     return encryptor.EncryptBuffer(*this);
+// }
 
 
+
+//Internals
 
 
 byte& ManagedBuffer::operator[](size_t index)
