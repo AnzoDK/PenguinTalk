@@ -29,6 +29,15 @@ private:
     T m_freeSpace;
 };
 
+class UserSettings
+{
+public:
+    UserSettings(){};
+    ~UserSettings();
+private:
+protected:
+};
+
 class UserGroup
 {
 public:
@@ -52,12 +61,19 @@ public:
         if(m_userKey != 0x0)
         {
             delete m_userKey;
+            m_userKey = 0x0;
+        }
+        if(m_settings != 0x0)
+        {
+            delete m_settings;
+            m_settings = 0x0;
         }
     };
     uint64_t GetID(){return m_id;};
 protected:
     uint64_t m_id = 0x0;
     RSAPublicKey* m_userKey = 0x0;
+    UserSettings* m_settings = 0x0;
 };
 
 class ServerUser : public UserBase

@@ -10,7 +10,7 @@ public:
     ~RSAPublicKey();
     byte* Encrypt(byte* buffer, uint bufferSize, uint& returnedBufferSize);
 protected:
-    ManagedBuffer m_buffer;
+    ManagedBuffer* m_buffer;
 };
 
 class RSAPrivateKey : public RSAPublicKey
@@ -24,9 +24,13 @@ private:
     
 };
 
-struct RSAKey
+class RSAKey
 {
-    RSAPrivateKey privateKey;
-    RSAPublicKey publicKey;
+public:
+    RSAKey(){};
+    ~RSAKey();
+    void GenerateKey();
+    RSAPrivateKey* privateKey = nullptr;
+    RSAPublicKey* publicKey = nullptr;
 };
 
