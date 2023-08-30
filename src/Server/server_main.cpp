@@ -1,4 +1,4 @@
-//#include <Server/PenguinTalkServer.h>
+#include <Server/PenguinTalkServer.h>
 #include "../../include/Common/ManagedBuffer/ManagedBuffer.h"
 #include "../../include/Common/EncryptionManager/EncryptionManager.h"
 #include <iostream>
@@ -22,6 +22,7 @@ int main(int argc, char** argv)
 {
     int port = DEFAULT_PORT;
     std::string host = DEFAULT_HOST;
+    std::string dbPath = "./ptserver.sdb";
     if(cmdOptionExists(argv,argv+argc,"--port"))
     {
         port = std::stoi(getCmdOption(argv,argv+argc,"--port"));
@@ -30,6 +31,13 @@ int main(int argc, char** argv)
     {
         host = getCmdOption(argv,argv+argc,"--host");
     }
+    if(cmdOptionExists(argv,argv+argc,"--dbpath"))
+    {
+        dbPath = getCmdOption(argv,argv+argc,"--dbpath");
+    }
+    Server s = Server(dbPath);
+    s.Init();
+    auto serverLoop = std::async(std::launch::async, &Server::Loop, s); //Run loop on another thread
     /*Server s = Server(port,host);
     int err = s.Init();
     if(err != 0)
@@ -43,6 +51,6 @@ int main(int argc, char** argv)
         std::cout << g_GetSocketError(err) << std::endl;
         exit(1);
     }*/
-    ManagedBuffer buff = ManagedBuffer();
-    Encryptor ec = Encryptor();
+    //ManagedBuffer buff = ManagedBuffer();
+    //Encryptor ec = Encryptor();
 }
