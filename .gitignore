@@ -8,3 +8,4 @@ backUp_dataBase
 *.zip
 *.o
 src/ClientTS/package-lock.json
+.vs

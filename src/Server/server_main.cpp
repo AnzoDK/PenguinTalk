@@ -1,7 +1,10 @@
-#include <Server/PenguinTalkServer.h>
+#include "../../include/Server/PenguinTalkServer.h"
 #include "../../include/Common/ManagedBuffer/ManagedBuffer.h"
 #include "../../include/Common/EncryptionManager/EncryptionManager.h"
 #include <iostream>
+#if defined (_WIN32) || defined(_WIN64)
+#include <string>
+#endif
 
 char* getCmdOption(char ** begin, char ** end, const std::string & option)
 {

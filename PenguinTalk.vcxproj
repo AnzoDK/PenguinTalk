@@ -37,38 +37,38 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Primary Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Primary Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -205,15 +205,39 @@
     <None Include=".vs\ProjectSettings.json" />
     <None Include=".vs\slnx.sqlite" />
     <None Include=".vs\VSWorkspaceState.json" />
+    <None Include="getDB.sh" />
+    <None Include="makefile" />
     <None Include="PenguinTalk.kdev4" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Common\AccountRoles\AccountRoles.h" />
+    <ClInclude Include="include\Common\EncryptionManager\EncryptionManager.h" />
+    <ClInclude Include="include\Common\EncryptionManager\RSAKey.h" />
+    <ClInclude Include="include\Common\Exceptions\PenguinTalkExceptions.h" />
+    <ClInclude Include="include\Common\ManagedBuffer\ManagedBuffer.h" />
+    <ClInclude Include="include\Common\PenguinTalkCommon.h" />
+    <ClInclude Include="include\Common\StoopidMaps.h" />
     <ClInclude Include="include\PenguinTalkClient.h">
       <DeploymentContent>true</DeploymentContent>
     </ClInclude>
     <ClInclude Include="include\PenguinTalkCommon.h" />
     <ClInclude Include="include\PenguinTalkServer.h" />
+    <ClInclude Include="include\Server\PenguinTalkServer.h" />
+    <ClInclude Include="include\Server\_AccountManagement.h" />
+    <ClInclude Include="include\Server\_AccountSystem.h" />
+    <ClInclude Include="include\Server\_DBManager.h" />
+    <ClInclude Include="StoopidDB\stoopidDB.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Common\EncryptionManager\encryptionmanager.cpp" />
+    <ClCompile Include="src\Common\EncryptionManager\RSA.cpp" />
+    <ClCompile Include="src\Common\ManagedBuffer\managedbuffer.cpp" />
+    <ClCompile Include="src\Server\server.cpp" />
+    <ClCompile Include="src\Server\server_account_management.cpp" />
+    <ClCompile Include="src\Server\server_account_system.cpp" />
+    <ClCompile Include="src\Server\server_db_manager.cpp" />
+    <ClCompile Include="src\Server\server_main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
