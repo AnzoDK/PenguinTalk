@@ -23,6 +23,8 @@
     <None Include=".vs\VSWorkspaceState.json" />
     <None Include=".vs\PenguinTalk\v16\Browse.VC.db" />
     <None Include=".kdev4\PenguinTalk.kdev4" />
+    <None Include="getDB.sh" />
+    <None Include="makefile" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\PenguinTalkServer.h">
@@ -34,5 +36,67 @@
     <ClInclude Include="include\PenguinTalkClient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Server\PenguinTalkServer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\EncryptionManager\EncryptionManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\EncryptionManager\RSAKey.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\ManagedBuffer\ManagedBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\PenguinTalkCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\StoopidMaps.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Server\_AccountManagement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Server\_AccountSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Server\_DBManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\AccountRoles\AccountRoles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\Exceptions\PenguinTalkExceptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StoopidDB\stoopidDB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Server\server_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\EncryptionManager\encryptionmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\EncryptionManager\RSA.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\ManagedBuffer\managedbuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Server\server.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Server\server_account_management.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Server\server_account_system.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Server\server_db_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

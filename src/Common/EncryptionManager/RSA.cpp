@@ -1,5 +1,6 @@
 #include "../../../include/Common/EncryptionManager/RSAKey.h"
 #include "../../../include/Common/Exceptions/PenguinTalkExceptions.h"
+#include "../../../include/Common/PenguinTalkCommon.h"
 //Public Key
 
 RSAPublicKey::RSAPublicKey(byte* buffer, uint bufferSize)

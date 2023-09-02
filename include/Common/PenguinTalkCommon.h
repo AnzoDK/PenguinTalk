@@ -34,6 +34,9 @@
 // Adding the bzero and bcopy shortcuts from Linux into Windows
 #define bzero(b,len) (memset((b), '\0', (len)), (void) 0)  
 #define bcopy(b1,b2,len) (memmove((b2), (b1), (len)), (void) 0)
+
+// Define types
+typedef unsigned int uint;
 #endif
 
 #define FPS(start) (CLOCKS_PER_SEC / (clock()-start))
@@ -50,7 +53,7 @@ namespace fs = std::filesystem;
 
 /*ENUMS*/
 enum InitStatus{CONN_SUCCESS=0, CONN_FAILED, PORT_IN_USE, BIND_FAILED, NO_HOST, CONN_ERROR};
-enum ErrorState{NO_ERROR=0, SOCKET_READ_ERROR, SOCKET_WRITE_ERROR, ACCEPT_ERROR};
+enum ErrorState{ERROR_NONE=0, SOCKET_READ_ERROR, SOCKET_WRITE_ERROR, ACCEPT_ERROR};
 /*END*/
 
 /*Global Functions*/
@@ -101,7 +104,7 @@ static std::string g_GetSocketError(int errCode)
 {
     switch(errCode)
     {
-        case NO_ERROR:
+        case ERROR_NONE:
             return "No Error";
         case SOCKET_READ_ERROR:
             return "Failed to read from socket";
